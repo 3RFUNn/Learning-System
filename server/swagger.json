@@ -1,0 +1,2746 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "learning system",
+        "description": "",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "servers": [{ "url": "http://localhost:3000" }]
+    },
+    "basePath": "/",
+    "apis": ["main.js"],
+    "tags": [
+        {
+            "name": "default",
+            "description": ""
+        }
+    ],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+        "/rooms": {
+            "get": {
+                "tags": ["rooms"],
+                "summary": "Get rooms",
+                "description": "Retrieve a list of rooms based on query parameters.",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "name": "roomNumber",
+                        "in": "query",
+                        "description": "Room number to filter by.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "capacity",
+                        "in": "query",
+                        "description": "Room capacity to filter by.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "isActive",
+                        "in": "query",
+                        "description": "Filter rooms by active status.",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Field to sort by.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "Sort order (asc or desc).",
+                        "required": false,
+                        "type": "string",
+                        "enum": ["asc", "desc"]
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 1
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of items per page for pagination.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Room"
+                                    }
+                                },
+                                "status": {
+                                    "type": "integer"
+                                },
+                                "error": {
+                                    "type": "null"
+                                },
+                                "ok": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/rooms/toggle-active": {
+            "post": {
+                "tags": ["rooms"],
+                "summary": "Deactivate a room",
+                "description": "Deactivate a room by setting its isActive property to false.",
+
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "name": "roomId",
+                        "in": "body",
+                        "description": "ID of the room to deactivate.",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "roomId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Room"
+                                },
+                                "status": {
+                                    "type": "integer"
+                                },
+                                "error": {
+                                    "type": "null"
+                                },
+                                "ok": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/rooms/{id}/student": {
+            "post": {
+                "tags": ["rooms"],
+                "summary": "Add a student to a room",
+                "description": "Add one or more residents to a room.",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "List of Student ids to add",
+                        "required": true,
+                        "properties": {
+                            "studentIds": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Room"
+                                },
+                                "status": {
+                                    "type": "integer"
+                                },
+                                "error": {
+                                    "type": "null"
+                                },
+                                "ok": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["rooms"],
+                "summary": "Remove a student from a room",
+                "description": "Remove a resident from a room based on the provided student ID.",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "studentId",
+                        "in": "query",
+                        "description": "ID of the student to remove from the room.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Room"
+                                },
+                                "status": {
+                                    "type": "integer"
+                                },
+                                "error": {
+                                    "type": "null"
+                                },
+                                "ok": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/books/borrowed": {
+            "get": {
+                "tags": ["books"],
+                "summary": "Get Borrowed Books",
+                "description": "Retrieve the list of books borrowed by a student",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": [
+                                        {
+                                            "book": "bookId1",
+                                            "borrowedDate": "2022-01-01T00:00:00Z",
+                                            "returnDate": "2022-01-15T00:00:00Z"
+                                        },
+                                        {
+                                            "book": "bookId2",
+                                            "borrowedDate": "2022-02-01T00:00:00Z",
+                                            "returnDate": null
+                                        }
+                                    ],
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": ""
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 403,
+                                    "error": "access denied",
+                                    "ok": false,
+                                    "message": "you don't have permission"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student Not Found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 404,
+                                    "error": "Student not found",
+                                    "ok": false,
+                                    "message": "Student not found with the provided user ID"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Internal Server Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books/all": {
+            "get": {
+                "tags": ["books"],
+                "summary": "Get All Books",
+                "description": "Retrieve the list of all books",
+
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": [
+                                        {
+                                            "_id": "bookId1",
+                                            "name": "Book 1",
+                                            "author": "Author 1",
+                                            "publishYear": 2020,
+                                            "classification": "Fiction",
+                                            "totalCount": 5,
+                                            "availableCount": 2
+                                        },
+                                        {
+                                            "_id": "bookId2",
+                                            "name": "Book 2",
+                                            "author": "Author 2",
+                                            "publishYear": 2021,
+                                            "classification": "Non-Fiction",
+                                            "totalCount": 3,
+                                            "availableCount": 1
+                                        }
+                                    ],
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": "",
+                                    "pagination": {
+                                        "page": 1,
+                                        "pageSize": 10,
+                                        "totalCount": 53,
+                                        "totalPages": 6
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Internal Server Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books/search": {
+            "get": {
+                "tags": ["books"],
+                "summary": "Search and Filter Books",
+                "description": "Search and filter books by name, author, and availability",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Search by book name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "Search by author name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "available",
+                        "in": "query",
+                        "description": "Filter by availability",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": [
+                                        {
+                                            "_id": "bookId1",
+                                            "name": "Book 1",
+                                            "author": "Author 1",
+                                            "publishYear": 2020,
+                                            "classification": "Fiction",
+                                            "totalCount": 5,
+                                            "availableCount": 2
+                                        },
+                                        {
+                                            "_id": "bookId2",
+                                            "name": "Book 2",
+                                            "author": "Author 2",
+                                            "publishYear": 2021,
+                                            "classification": "Non-Fiction",
+                                            "totalCount": 3,
+                                            "availableCount": 1
+                                        }
+                                    ],
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": ""
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Internal Server Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/books/borrow": {
+            "post": {
+                "tags": ["books"],
+                "summary": "Borrow a Book",
+                "description": "Borrow a book to a student (Only Library Managers can use this endpoint)",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "required": true,
+                        "name": "body",
+                        "properties": {
+                            "studentId": {
+                                "type": "string"
+                            },
+                            "bookId": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": {
+                                        "book": "bookId456",
+                                        "borrowedDate": "2022-01-01T00:00:00Z",
+                                        "returnDate": "2022-02-01T00:00:00Z"
+                                    },
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": "Book successfully borrowed"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 403,
+                                    "error": "access denied",
+                                    "ok": false,
+                                    "message": "Only Library Managers can borrow books"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 404,
+                                    "error": "Book or Student not found",
+                                    "ok": false,
+                                    "message": "Book or Student not found with the provided ID"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 400,
+                                    "error": "Book not available",
+                                    "ok": false,
+                                    "message": "The requested book is not available for borrowing"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Error in borrowing the book"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/books/{bookId}/students": {
+            "get": {
+                "tags": ["books"],
+                "summary": "Get all students who borrowed a specific book.",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "bookId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The ID of the book."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with an array of students.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": [
+                                        {
+                                            "_id": "123",
+                                            "firstName": "John",
+                                            "lastName": "Doe"
+                                        },
+                                        {
+                                            "_id": "456",
+                                            "firstName": "Jane",
+                                            "lastName": "Doe"
+                                        }
+                                    ],
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": ""
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 404,
+                                    "error": "Book not found",
+                                    "ok": false,
+                                    "message": "Book not found"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Internal Server Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/books/return": {
+            "post": {
+                "tags": ["books"],
+                "summary": "Return a Borrowed Book",
+                "description": "Return a borrowed book by a student (Only Library Managers can use this endpoint)",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "required": true,
+                        "name": "body",
+                        "properties": {
+                            "studentId": {
+                                "type": "string"
+                            },
+                            "bookId": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": {
+                                        "book": "bookId456",
+                                        "borrowedDate": "2022-01-01T00:00:00Z",
+                                        "returnDate": "2022-02-01T00:00:00Z"
+                                    },
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": "Book successfully returned"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 403,
+                                    "error": "access denied",
+                                    "ok": false,
+                                    "message": "Only Library Managers can return books"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 404,
+                                    "error": "Book or Student not found",
+                                    "ok": false,
+                                    "message": "Book or Student not found with the provided ID"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Error in returning the book"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/books/add": {
+            "post": {
+                "tags": ["books"],
+                "summary": "Add a Book",
+                "description": "Add a new book to the library (Only Library Managers can use this endpoint)",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "name": "Book 3",
+                                "author": "Author 3",
+                                "publishYear": 2022,
+                                "classification": "Science Fiction",
+                                "totalCount": 5
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": {
+                                        "_id": "bookId3",
+                                        "name": "Book 3",
+                                        "author": "Author 3",
+                                        "publishYear": 2022,
+                                        "classification": "Science Fiction",
+                                        "totalCount": 5,
+                                        "availableCount": 5
+                                    },
+                                    "status": 200,
+                                    "error": null,
+                                    "ok": true,
+                                    "message": "Book successfully added"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 403,
+                                    "error": "access denied",
+                                    "ok": false,
+                                    "message": "Only Library Managers can add books"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "data": null,
+                                    "status": 500,
+                                    "error": "Internal Server Error",
+                                    "ok": false,
+                                    "message": "Error in adding the book"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/students": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Student Handler",
+                "description": "This endpoint is used to get student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/Professor": {
+            "post": {
+                "tags": ["users"],
+                "summary": "Add Professor Handler",
+                "description": "This endpoint is used to add professor handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Professor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/Professor/{id}": {
+            "put": {
+                "tags": ["users"],
+                "summary": "Edit Professor Handler",
+                "description": "This endpoint is used to edit professor handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["users"],
+                "summary": "Delete Professor Handler",
+                "description": "This endpoint is used to delete professor handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Professor Handler",
+                "description": "This endpoint is used to get professor handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/Professor/{id}": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Professor Handler",
+                "description": "This endpoint is used to get professor handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/Professors": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Professors Handler",
+                "description": "This endpoint is used to get professors handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/Professors": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Professors Handler",
+                "description": "This endpoint is used to get professors handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/student": {
+            "post": {
+                "tags": ["users"],
+                "summary": "Add Student Handler",
+                "description": "This endpoint is used to add student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Student"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/student/{id}": {
+            "put": {
+                "tags": ["users"],
+                "summary": "Edit Student Handler",
+                "description": "This endpoint is used to edit student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Student"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["users"],
+                "summary": "Delete Student Handler",
+                "description": "This endpoint is used to delete student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Student Handler",
+                "description": "This endpoint is used to get student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/students/": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get All Students",
+                "description": "This endpoint is used to get list of all students for administration",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "number"
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/student/{id}": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Get Student Handler",
+                "description": "This endpoint is used to get student handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/manager": {
+            "post": {
+                "tags": ["users"],
+                "summary": "Add EDU Manager Handler",
+                "description": "This endpoint is used to add EDU manager handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EduManager"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/admin/manager/{id}": {
+            "put": {
+                "tags": ["users"],
+                "summary": "put EDU Manager Handler",
+                "description": "This endpoint is used to add EDU manager handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/EduManager"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "get": {
+                "tags": ["users"],
+                "summary": "get EDU Manager Handler",
+                "description": "This endpoint is used to add EDU manager handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["users"],
+                "summary": "delete EDU Manager Handler",
+                "description": "This endpoint is used to add EDU manager handler.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/course/{id}": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/courses": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{isTerm}": {
+            "post": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "isTerm",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{id}/student": {
+            "post": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{id}/registrations": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/preregister/{id}": {
+            "post": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/register/{id}": {
+            "post": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/registration/{id}": {
+            "put": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{id}/preregistrations": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{id}/preregistration": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/course/{id}/registration": {
+            "get": {
+                "tags": ["courses"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["auth"],
+                "x-swagger-router-controller": "login",
+                "summary": "Login user",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserLoginData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/terms": {
+            "get": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}": {
+            "tags": ["terms"],
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Term"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/term": {
+            "post": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Term"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/preregistration": {
+            "post": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "courseId": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/preregistration_courses": {
+            "get": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/registration": {
+            "post": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "courseId": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/registration_courses": {
+            "get": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/preregistrations": {
+            "get": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/term/{id}/registrations": {
+            "get": {
+                "tags": ["terms"],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Room": {
+            "type": "object",
+            "properties": {
+                "roomNumber": {
+                    "type": "number"
+                },
+                "capacity": {
+                    "type": "number"
+                },
+                "currentResidents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "isActive": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "User": {
+            "required": ["firstName", "lastName", "id", "password", "email", "mobileNumber"],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobileNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "Student": {
+            "required": [
+                "firstName",
+                "lastName",
+                "id",
+                "password",
+                "email",
+                "mobileNumber",
+                "level",
+                "entryYear",
+                "entryTerm",
+                "gpa",
+                "courses"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobileNumber": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "entryYear": {
+                    "type": "number"
+                },
+                "entryTerm": {
+                    "type": "string"
+                },
+                "gpa": {
+                    "type": "number"
+                },
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "supervisor": {
+                    "type": "string"
+                }
+            }
+        },
+        "Professor": {
+            "required": [
+                "firstName",
+                "lastName",
+                "id",
+                "password",
+                "email",
+                "mobileNumber",
+                "department",
+                "subject",
+                "rank",
+                "courses"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobileNumber": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "number"
+                },
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "EduManager": {
+            "required": ["firstName", "lastName", "id", "password", "email", "mobileNumber", "department"],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobileNumber": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                }
+            }
+        },
+        "ItManager": {
+            "required": ["firstName", "lastName", "id", "password", "email", "mobileNumber"],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "mobileNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserLoginData": {
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/User"
+        },
+        "Course": {
+            "required": ["id", "name", "prerequisite", "coPrerequisite", "unit"],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prerequisite": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "coPrerequisite": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit": {
+                    "type": "number"
+                }
+            }
+        },
+
+        "Book": {
+            "required": ["name", "author", "publishYear", "classification", "totalCount"],
+
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "publishYear": {
+                    "type": "number"
+                },
+                "classification": {
+                    "type": "string"
+                },
+                "totalCount": {
+                    "type": "number"
+                }
+            }
+        },
+
+        "TermCourse": {
+            "required": ["id", "name", "prerequisite", "coPrerequisite", "unit", "type", "professorId"],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prerequisite": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "coPrerequisite": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit": {
+                    "type": "number"
+                },
+                "classTime": {
+                    "type": "string"
+                },
+                "examTime": {
+                    "type": "string"
+                },
+                "examLocation": {
+                    "type": "string"
+                },
+                "professorName": {
+                    "type": "string"
+                },
+                "professorId": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "number"
+                },
+                "term": {
+                    "type": "string"
+                },
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Courses": {
+            "type": "array",
+            "$ref": "#/definitions/TermCourse"
+        },
+        "Term": {
+            "required": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Course"
+                    }
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/User"
+                    }
+                }
+            }
+        },
+        "CoursePreRegistration": {
+            "properties": {
+                "courseId": {
+                    "type": "string"
+                }
+            }
+        },
+        "CourseRegistration": {
+            "properties": {
+                "courseId": {
+                    "type": "string"
+                }
+            }
+        },
+        "OneCoursePreRegistration": {
+            "properties": {
+                "termId": {
+                    "type": "string"
+                }
+            }
+        },
+        "OneCourseRegistration": {
+            "properties": {
+                "termId": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

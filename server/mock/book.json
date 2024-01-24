@@ -1,0 +1,66 @@
+[
+    {
+        "name": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "publishYear": 1925,
+        "classification": "Classic",
+        "totalCount": 10,
+        "availableCount": 10
+    },
+    {
+        "name": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "publishYear": 1960,
+        "classification": "Fiction",
+        "totalCount": 8,
+        "availableCount": 8
+    },
+    {
+        "name": "1984",
+        "author": "George Orwell",
+        "publishYear": 1949,
+        "classification": "Dystopian",
+        "totalCount": 12,
+        "availableCount": 12
+    },
+    {
+        "name": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "publishYear": 1937,
+        "classification": "Fantasy",
+        "totalCount": 15,
+        "availableCount": 15
+    },
+    {
+        "name": "Introduction to Mechanical Engineering",
+        "author": "John A. Schey",
+        "publishYear": 2000,
+        "classification": "Engineering",
+        "totalCount": 20,
+        "availableCount": 20
+    },
+    {
+        "name": "Electrical Circuits: Principles and Applications",
+        "author": "Richard C. Dorf",
+        "publishYear": 2014,
+        "classification": "Electrical Engineering",
+        "totalCount": 18,
+        "availableCount": 18
+    },
+    {
+        "name": "Computer Networks: A Systems Approach",
+        "author": "Larry L. Peterson, Bruce S. Davie",
+        "publishYear": 2011,
+        "classification": "Computer Science",
+        "totalCount": 25,
+        "availableCount": 25
+    },
+    {
+        "name": "Structural Analysis and Design of Tall Buildings",
+        "author": "Bungale S. Taranath",
+        "publishYear": 2016,
+        "classification": "Civil Engineering",
+        "totalCount": 15,
+        "availableCount": 15
+    }
+]

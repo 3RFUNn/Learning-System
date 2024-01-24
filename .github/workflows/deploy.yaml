@@ -1,0 +1,95 @@
+name: Deploy pipeline
+
+on:
+  push:
+    branches:
+      - "main"
+env:
+    DEPLOY_HOST: ${{ secrets.SSH_HOST }}
+    DEPLOY_USER: ${{ secrets.SSH_USER }}
+    PROJECT_DIR: " ~/learning-system" # project directory on the server
+    DEPLOY_KEY: ${{ secrets.SSH_KEYP }}
+    APP_NAME: "app"
+
+jobs:
+    deploy_server:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v3
+
+            - name: Configure SSH
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "$SSH_KEY" > ~/.ssh/github_action
+                  chmod 400 ~/.ssh/github_action
+                  cat >>~/.ssh/config <<END
+                  Host staging
+                    HostName $SSH_HOST
+                    User $SSH_USER
+                    IdentityFile ~/.ssh/github_action
+                    StrictHostKeyChecking no
+                  END
+              env:
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_KEY: ${{ secrets.SSH_KEYP }}
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+
+            - name: Pull new code
+              run: ssh staging 'cd ~/learning-system && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/github_action && git pull origin main'
+
+            - name: Run Docker
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ env.DEPLOY_HOST }}
+                  username: ${{ env.DEPLOY_USER }}
+                  key: ${{ env.DEPLOY_KEY }}
+                  script: |
+                      cd ${{ env.PROJECT_DIR }}
+                      cd server
+                      docker compose up -d --build
+    deploy_client:
+        needs: deploy_server                   
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v3
+
+            - name: Configure SSH
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "$SSH_KEY" > ~/.ssh/github_action
+                  chmod 400 ~/.ssh/github_action
+                  cat >>~/.ssh/config <<END
+                  Host staging
+                    HostName $SSH_HOST
+                    User $SSH_USER
+                    IdentityFile ~/.ssh/github_action
+                    StrictHostKeyChecking no
+                  END
+              env:
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_KEY: ${{ secrets.SSH_KEYP }}
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+
+            - name: Pull new code
+              run: ssh staging 'cd ~/learning-system && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/github_action && git pull origin main'
+
+
+
+
+            - name: Build the app
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ env.DEPLOY_HOST }}
+                  username: ${{ env.DEPLOY_USER }}
+                  key: ${{ env.DEPLOY_KEY }}
+                  script: |
+                      cd ${{ env.PROJECT_DIR }}
+                      cd client
+                      npm install
+                      npm run build
+                      rm -r /var/www/learning-system-client/*
+                      cp -r ./dist/* /var/www/learning-system-client
+                      rm /etc/nginx/sites-enabled/learning-system-client.conf
+                      cat nginx.conf >> /etc/nginx/sites-enabled/learning-system-client.conf

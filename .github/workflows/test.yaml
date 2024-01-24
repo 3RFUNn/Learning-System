@@ -1,0 +1,51 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - "develop"
+  pull_request:
+    branches:
+      - "develop"
+
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MONGO_HOST: localhost
+      MONGO_PORT: 27017
+      MONGO_USERNAME: freddie_mercury
+      MONGO_PASSWORD: MAMAAAAA
+      MONGO_DB_NAME: test
+
+    steps:
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: 6.0
+          mongodb-replica-set: test-rs
+          mongodb-port: 27017
+          # mongodb-username: freddie_mercury
+          # mongodb-password: MAMAAAAA
+          mongodb-db: test
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run tests
+        run: |
+          cd server
+          npm run test

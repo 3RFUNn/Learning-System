@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+
+  mongo_db:
+    image: mongo
+    container_name: mongo_db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "${MONGO_PORT}:27017"
+    
+
+  app:
+    build: .
+    container_name: app
+    restart: on-failure
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_HOST: mongo_db # override because of docker networks
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      REDIS_HOST: redis # override because of docker networks
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis
+    container_name: redis_db
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  mongodb_data:
